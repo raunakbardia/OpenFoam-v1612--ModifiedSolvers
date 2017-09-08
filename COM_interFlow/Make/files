@@ -1,0 +1,3 @@
+COM_interFlow.C
+
+EXE = $(FOAM_USER_APPBIN)/COM_interFlow
