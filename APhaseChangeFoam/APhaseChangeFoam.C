@@ -35,7 +35,7 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include "isoAdvection.H"
+#include "PCisoAdvection.H"	// Changed the Header File
 #include "fvCFD.H"
 #include "CMULES.H"
 #include "EulerDdtScheme.H"
@@ -49,7 +49,7 @@ Description
 #include "CorrectPhi.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
-
+#include "OFstream.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
@@ -79,13 +79,15 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
+/*    // October 24, 2017
+    ofstream InterfaceFile("InterfaceLog");
+    InterfaceFile << "Center_x\tCenter_y\tCenter_z\tArea_x\tArea_y\tArea_z\n";
+    //
+*/    
     while (runTime.run())
     {
         #include "readTimeControls.H"
 	
-	/* * * * September 14, 2017 * * * */
-	#include "mdot.H"
-	// Addition Complete. By: Raunak Bardia
 
         if (LTS)
         {
@@ -105,6 +107,9 @@ int main(int argc, char *argv[])
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
+	    // Added by Raunak Bardia on October 27, 2017
+		#include "mdot.H"
+	    //
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
 

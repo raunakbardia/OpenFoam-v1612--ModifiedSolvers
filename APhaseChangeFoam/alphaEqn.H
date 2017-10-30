@@ -49,7 +49,7 @@ else if (interfaceMethod == "isoAdvector")
         << "  Max(" << alpha1.name() << ") - 1 = " << max(alpha1).value() - 1
         << endl;
 }
-
+/*
 //U not solved but prescribed and optionally periodic
 if (prescribedU)
 {
@@ -74,4 +74,4 @@ if (prescribedU)
         phi = uFactor*phi0;
         U = uFactor*U0;
     }
-}
+}*/

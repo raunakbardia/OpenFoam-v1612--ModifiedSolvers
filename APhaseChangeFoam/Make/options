@@ -13,7 +13,7 @@ EXE_INC = \
 
 EXE_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
-    -lisoAdvection \
+    -lPCisoAdvection \
     -limmiscibleIncompressibleTwoPhaseMixture \
     -lturbulenceModels \
     -lincompressibleTurbulenceModels \

@@ -154,8 +154,52 @@ surfaceScalarField alphaPhiUn
 tmp<surfaceScalarField> talphaPhiCorr0;
 
 #include "createMRF.H"
-#include "createIsoAdvection.H"
 
+
+// Following lines added by Raunak Bardia on October 27, 2017
+/* Calculation of mdot value for phase change: Corresponds with Eq2 and Eq 20
+	of Sato & Niceno (2013), JCP */
+volScalarField mdot
+(
+    IOobject
+    (
+        "mdot",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("zero", dimensionSet(1,-3,-1,0,0,0,0), 0.0)
+);
+
+/* Calculation of source term for alpha eqn: Eq 2 in Sato & Niceno (2013), JCP */
+volScalarField mdot_source
+(
+    IOobject
+    (
+        "mdot_source",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ
+    ),
+    mdot/rho1
+);
+
+/* Calculation of MassFlux at the interface */
+dimensionedScalar Minterface("zero", dimensionSet(1,-2,-1,0,0,0,0), -0.1);
+
+// Instantiating isoAdvection object for advancing alpha1
+isoAdvection advector(alpha1,mdot_source,phi,U);
+
+DynamicList<label> surfCells;
+DynamicList<vector> interfaceArea;
+DynamicList<point> interfaceCenter;
+const volVectorField cellcenter = mesh.C();	// This limits the implementation to static mesh only 
+const scalarField cellvol = mesh.V();	// This limits the implementation to static mesh only 
+
+// * * * * * * September 25, 2017 * * * * * * //
+/*
 // * * * * * * September 13, 2017 * * * * * * //
 
 // Temperature
@@ -289,7 +333,6 @@ surfaceScalarField HPhi
     fvc::interpolate(rhoCp)*phi
 );
 
-/*
 dimensionedVector COM_y = fvc::domainIntegrate(alpha1*mesh.C()) / fvc::domainIntegrate(alpha1);
 OFstream COMFile
 (

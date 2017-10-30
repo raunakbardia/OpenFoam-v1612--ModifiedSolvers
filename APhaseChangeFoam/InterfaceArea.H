@@ -1,19 +1,15 @@
 
-rhoCv = alpha1 * rho1 * Cvl + (1 - alpha1) * rho2 * Cvv;
+/* This file obtains the cellID of interfacial cells and 
+   evaluates the interface area and interface center from
+   the sub-cell interface reconstruction provided in the
+   isoAdvector solver.
+*/
 
-rhoCp = alpha1 * rho1 * Cpl + (1 - alpha1) * rho2 * Cpv;
+surfCells = advector.interfacecells();
 
-Hphi = fvc::interpolate(rhoCp) * phi;
-
-fvScalarMatrix TEqn
-(
-    fvm::ddt(rhoCv,T)
-    + fvm::div(Hphi,T)
-    - fvm::laplacian(k,T)
-);
-TEqn.solve();
-~                                                                                                                                      
-~                                                                                                                                      
-~                                                                                                                                      
-~                                                                                                                                      
-~   
+forAll (surfCells,i)
+{
+	interfaceArea[i] = advector.AreaCalc(surfCells[i]);
+	interfaceCenter[i] = advector.CentreCalc(surfCells[i]);
+	Info << surfCells[i] << '\n';
+}
