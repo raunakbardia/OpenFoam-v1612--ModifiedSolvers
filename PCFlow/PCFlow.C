@@ -79,16 +79,14 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
-/*    // October 24, 2017
-    ofstream InterfaceFile("InterfaceLog");
-    InterfaceFile << "Center_x\tCenter_y\tCenter_z\tArea_x\tArea_y\tArea_z\n";
-    //
-*/    
     while (runTime.run())
     {
+        // Added by Raunak Bardia on November 1, 2017
+        	#include "mdot.H"
+	//
+
         #include "readTimeControls.H"
 	
-
         if (LTS)
         {
             #include "setRDeltaT.H"
@@ -107,9 +105,6 @@ int main(int argc, char *argv[])
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-	    // Added by Raunak Bardia on October 27, 2017
-		#include "mdot.H"
-	    //
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
 
@@ -134,7 +129,7 @@ int main(int argc, char *argv[])
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;
-    }
+   }
 
     Info<< "End\n" << endl;
 

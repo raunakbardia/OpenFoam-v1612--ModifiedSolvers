@@ -1,5 +1,5 @@
-$(OBJECTS_DIR)/APhaseChangeFoam.C.dep: \
-APhaseChangeFoam.C \
+$(OBJECTS_DIR)/PCFlow.C.dep: \
+PCFlow.C \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/PCisoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvMesh.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/polyMesh.H \
@@ -507,6 +507,8 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvsPatchFieldsFwd.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/calculatedFvsPatchFields.H \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoCutCell.H \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoCutFace.H \
+/home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvectionTemplates.C \
+/home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvCFD.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/parRun.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvc.H \
@@ -829,11 +831,11 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/continuityErrs.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readTimeControls.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/CourantNo.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/setInitialDeltaT.H \
+mdot.H \
+InterfaceDetails.H \
 setRDeltaT.H \
 alphaCourantNo.H \
 setDeltaT.H \
-mdot.H \
-InterfaceArea.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/alphaControls.H \
 alphaEqnSubCycle.H \
 alphaEqn.H \

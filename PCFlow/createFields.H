@@ -130,7 +130,7 @@ surfaceScalarField alphaPhi
         runTime.timeName(),
         mesh,
         IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     phi*fvc::interpolate(alpha1)
 );
@@ -156,47 +156,59 @@ tmp<surfaceScalarField> talphaPhiCorr0;
 #include "createMRF.H"
 
 
-// Following lines added by Raunak Bardia on October 27, 2017
+// Output details for Interface
+// Additions by Raunak Bardia - Nov 1, 2017
+
+const scalarField cellvol = mesh.V();	// This limits the implementation to static mesh only 
+const vectorField cellcenter = mesh.C();	// This limits the implementation to static mesh only 
+const label meshsize = cellcenter.size();
+
+DynamicList<label> surfCells;	// Stores Cell Id of all interfacial cells
+
+// To get Interface Area Vectors for the entire mesh
+// It is zero for non-interfacial cells - easier to read in MATLAB
+List<vector> interfaceArea(meshsize);
+
+// To get Interface Center Position for the entire mesh
+// It is (-100,-100,-100) for non-interfacial cells - easier to read in MATLAB
+List<point> interfaceCenter(meshsize);
+
 /* Calculation of mdot value for phase change: Corresponds with Eq2 and Eq 20
 	of Sato & Niceno (2013), JCP */
-volScalarField mdot
+
+volScalarField PhaseChangeFlux
 (
     IOobject
     (
         "mdot",
         runTime.timeName(),
         mesh,
-        IOobject::READ_IF_PRESENT,
+        IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar("zero", dimensionSet(1,-3,-1,0,0,0,0), 0.0)
+    dimensionedScalar("zero", dimensionSet(1,-2,-1,0,0,0,0), -0.1)
 );
-
-/* Calculation of source term for alpha eqn: Eq 2 in Sato & Niceno (2013), JCP */
-volScalarField mdot_source
+volScalarField AlphaSourceTerm
 (
     IOobject
     (
-        "mdot_source",
+        "mdotsource",
         runTime.timeName(),
         mesh,
-        IOobject::NO_READ
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
     ),
-    mdot/rho1
+    mesh,
+    dimensionedScalar("zero", dimensionSet(0,0,-1,0,0,0,0), 0)
 );
 
-/* Calculation of MassFlux at the interface */
-dimensionedScalar Minterface("zero", dimensionSet(1,-2,-1,0,0,0,0), -0.1);
-
 // Instantiating isoAdvection object for advancing alpha1
-isoAdvection advector(alpha1,mdot_source,phi,U);
+isoAdvection advector(alpha1,AlphaSourceTerm,phi,U);
 
-DynamicList<label> surfCells;
-DynamicList<vector> interfaceArea;
-DynamicList<point> interfaceCenter;
-const volVectorField cellcenter = mesh.C();	// This limits the implementation to static mesh only 
-const scalarField cellvol = mesh.V();	// This limits the implementation to static mesh only 
+// Creating Dictionary to read if we want to write out interfacial cells
+const dictionary dict(mesh.solverDict(alpha1.name()));
+bool InterfaceWrite(dict.lookupOrDefault<bool>("writeInterfaceDetails",false));
 
 // * * * * * * September 25, 2017 * * * * * * //
 /*
@@ -216,20 +228,6 @@ volScalarField T
     mesh
 );
 
-// Creating Dictionary to read thermal properties
-IOdictionary PhaseChangeProperties
-(
-     IOobject
-     (
-          "transportProperties",
-          runTime.constant(),
-          mesh,
-          IOobject::MUST_READ,
-          IOobject::NO_WRITE
-     )
-);
-
-dimensionedScalar Cpl(PhaseChangeProperties.lookup("Cp_l"));
 dimensionedScalar Cvl(PhaseChangeProperties.lookup("Cv_l"));
 dimensionedScalar Cpv(PhaseChangeProperties.lookup("Cp_v"));
 dimensionedScalar Cvv(PhaseChangeProperties.lookup("Cv_v"));
