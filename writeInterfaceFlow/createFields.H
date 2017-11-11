@@ -154,41 +154,46 @@ surfaceScalarField alphaPhiUn
 tmp<surfaceScalarField> talphaPhiCorr0;
 
 #include "createMRF.H"
-#include "createIsoAdvection.H"
+// Instantiating isoAdvection object for advancing alpha1
+isoAdvection advector(alpha1, phi, U);
 
-// October 6, 2017
+// Output details for Interface
+// Additions by Raunak Bardia - Nov 1, 2017
 
-//Creating copies of initial U and phi for periodic flows
-//Rewrite to  avoid these extra fields when predcribedU = false
-const volVectorField U0(U);
-const volScalarField alpha0(alpha1);
-const surfaceScalarField phi0(phi);
-dimensionedScalar ErrorRK2 = fvc::domainIntegrate(alpha1-alpha0);
+const vectorField cellcenter = mesh.C();	// This limits the implementation to static mesh only 
+const label meshsize = cellcenter.size();
 
-surfaceScalarField alphaFlux
+DynamicList<label> surfCells;	// Stores Cell Id of all interfacial cells
+
+// To get Interface Area Vectors for the entire mesh
+// It is zero for non-interfacial cells - easier to read in MATLAB
+List<vector> interfaceArea(meshsize);
+
+// To get Interface Center Position for the entire mesh
+// It is (-100,-100,-100) for non-interfacial cells - easier to read in MATLAB
+List<point> interfaceCenter(meshsize);
+
+volScalarField kappa
 (
     IOobject
     (
-	"alphaFlux",
+	"kappa",
 	runTime.timeName(),
 	mesh,
 	IOobject::NO_READ,
 	IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("zero", dimVol, 0.0)
+    mixture.K()
 );
-
-volScalarField alphaVolFlux
+volVectorField gradalpha
 (
     IOobject
     (
-	"alphaVolFlux",
+	"gradalpha",
 	runTime.timeName(),
 	mesh,
 	IOobject::NO_READ,
 	IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("zero", dimVol, 0.0)
+    fvc::grad(alpha1)
 );

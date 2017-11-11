@@ -38,4 +38,19 @@ else
     #include "alphaEqn.H"
 }
 
+// Looking up which alpha1 solver to use
+const dictionary& alpha1Dict(mesh.solverDict(alpha1.name()));
+
+word interfaceMethod
+(
+    alpha1Dict.lookupOrDefault<word>("interfaceMethod", "isoAdvector")
+);
+if (interfaceMethod == "isoAdvector")
+{
+	Info << "Updating the Flux Field \n";
+	alphaFlux = advector.dVf();	
+	alphaVolFlux = fvc::average(alphaFlux);
+	Info<<alphaVolFlux[0]<<nl;
+}
+
 rho == alpha1*rho1 + alpha2*rho2;

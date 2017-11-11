@@ -1,6 +1,6 @@
-$(OBJECTS_DIR)/Vortex2DFlow.C.dep: \
-Vortex2DFlow.C \
-/home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvection.H \
+$(OBJECTS_DIR)/PhaseChangeWithSourceTermFlow.C.dep: \
+PhaseChangeWithSourceTermFlow.C \
+/home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/PCisoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvMesh.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/polyMesh.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/objectRegistry.H \
@@ -508,6 +508,7 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/calculatedFvsPatchFields.H \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoCutCell.H \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoCutFace.H \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvectionTemplates.C \
+/home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvCFD.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/parRun.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvc.H \
@@ -824,13 +825,14 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readGravitationalAcceleration.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readhRef.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/gh.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createMRF.H \
-createIsoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createFvOptions.H \
 correctPhi.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/continuityErrs.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readTimeControls.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/CourantNo.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/setInitialDeltaT.H \
+mdot.H \
+InterfaceDetails.H \
 setRDeltaT.H \
 alphaCourantNo.H \
 setDeltaT.H \
@@ -840,6 +842,7 @@ alphaEqn.H \
 alphaEqnMULES.H \
 UEqn.H \
 pEqn.H \
-CalculateVariables.H \
+writeInterface.H \
+identifyPhase.H \
 
 

@@ -1,5 +1,5 @@
-$(OBJECTS_DIR)/Vortex2DFlow.C.dep: \
-Vortex2DFlow.C \
+$(OBJECTS_DIR)/writeInterfaceFlow.C.dep: \
+writeInterfaceFlow.C \
 /home/rbardia/OpenFOAM/rbardia-v1612+/src/lnInclude/isoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/fvMesh.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/polyMesh.H \
@@ -824,7 +824,6 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readGravitationalAcceleration.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readhRef.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/gh.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createMRF.H \
-createIsoAdvection.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createFvOptions.H \
 correctPhi.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/continuityErrs.H \
@@ -840,6 +839,5 @@ alphaEqn.H \
 alphaEqnMULES.H \
 UEqn.H \
 pEqn.H \
-CalculateVariables.H \
 
 
