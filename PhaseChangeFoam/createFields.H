@@ -130,7 +130,7 @@ surfaceScalarField alphaPhi
         runTime.timeName(),
         mesh,
         IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     phi*fvc::interpolate(alpha1)
 );
@@ -154,45 +154,64 @@ surfaceScalarField alphaPhiUn
 tmp<surfaceScalarField> talphaPhiCorr0;
 
 #include "createMRF.H"
-#include "createIsoAdvection.H"
 
-// November 14, 2017
-volScalarField kappa
+const label meshsize = mesh.C().size();
+
+DynamicList<label> surfCells;	// Stores Cell Id of all interfacial cells
+
+// To get Interface Area Vectors for the entire mesh
+// It is zero for non-interfacial cells - easier to read in MATLAB
+List<vector> interfaceArea(meshsize);
+
+// To get Interface Center Position for the entire mesh
+// It is (-100,-100,-100) for non-interfacial cells - easier to read in MATLAB
+List<point> interfaceCenter(meshsize);
+
+volVectorField xdot
 (
     IOobject
     (
-        "kappa",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh
-);
-
-// October 6, 2017
-volScalarField sigmaKprescribed
-(
-    IOobject
-    (
-        "sigmaKprescribed",
+        "xdot",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::NO_WRITE
     ),
-    mixture.sigma() * kappa
+    mesh,
+    dimensionedVector("zero",dimensionSet(0,1,-2,0,0,0,0),Foam::vector(0.0,0.0,0.0))
 );
 
-volVectorField gradientalpha
+volScalarField massFlux
 (
     IOobject
     (
-        "gradientalpha",
+        "massFlux",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
-    fvc::reconstruct(fvc::snGrad(alpha1))
+    mesh,
+    dimensionedScalar("zero",dimensionSet(1,-2,-1,0,0,0,0),0.1)
 );
+
+volScalarField interface_upstream_source
+(
+    IOobject
+    (
+        "interface_upstream_source",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("zero",dimless,0.0)
+);
+
+// Instantiating isoAdvection object for advancing alpha1
+isoAdvection advector(alpha1,phi,U,xdot,massFlux,interface_upstream_source,rho1.value());
+
+const scalarField& cellVol = mesh.V();
+
+const dimensionedScalar deltaN("deltaN",1e-8/pow(average(alpha1.mesh().V()),1.0/3.0));
